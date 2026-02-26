@@ -1,6 +1,5 @@
 Requisitos Previos
 Node.js y npm: Instalados (versión 14+). Verifica con node -v y npm -v en terminal.
-Cuenta en MongoDB Atlas: Necesaria para la base de datos. Si no tienen, crean una gratuita en mongodb.com 
 Carpeta del Proyecto: La carpeta debe estar en su laptop
 Pasos para Ejecutar el Prototipo
 Paso 1: Instalar Dependencias del Backend
