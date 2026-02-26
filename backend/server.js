@@ -3,7 +3,7 @@ const mysql = require('mysql2');
 const express = require('express');
 const cors = require('cors');
 const app = express();
-
+const path = require('path');
 // --- 1. Conexión a Base de Datos (UNIFICADA) ---
 // Usamos la URL completa que es el método más seguro
 const pool = mysql.createPool({
@@ -30,9 +30,12 @@ module.exports = pool;
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); 
-
+app.use(express.static(path.join(__dirname, 'public')));
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 // --- 3. Rutas (Endpoints) ---
-// Asegúrate de que estos archivos no intenten conectar a localhost por su cuenta
+
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/products', require('./routes/products'));
 app.use('/api/carrito', require('./routes/carritoMySQL'));

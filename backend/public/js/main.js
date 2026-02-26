@@ -4,7 +4,7 @@ const contenedorProductos = document.querySelector("#contenedor-productos");
 const botonesCategorias = document.querySelectorAll(".boton-categoria");
 const tituloPrincipal = document.querySelector(".titulo-principal");
 
-const BASE_URL = 'https://ecommerce-gochi.onrender.com/api'; // Centralizamos la URL
+const BASE_URL = '/api';
 
 // --- 2. Carga Inicial ---
 async function cargarProductosDesdeBD() {
