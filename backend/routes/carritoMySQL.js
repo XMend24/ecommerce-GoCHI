@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../config/mysql');
+const db = require('../server');
 const verificarToken = require('../middleware/auth'); // Asegúrate de que la ruta a tu middleware sea correcta
 
 // 1. POST: Agregar un producto al carrito

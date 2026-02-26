@@ -1,5 +1,5 @@
 const express = require('express');
-const db = require('../config/mysql');
+const db = require('../server');
 const router = express.Router();
 const query = 'SELECT id, nombre AS titulo, precio, descripcion, imagen_url AS imagen, categoria FROM productos';
 // GET /api/products - Listar productos con ALIAS para el Frontend

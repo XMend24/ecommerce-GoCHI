@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const db = require('../config/mysql');
+const db = require('../server');
 const router = express.Router();
 
 // [RF-01] Registro

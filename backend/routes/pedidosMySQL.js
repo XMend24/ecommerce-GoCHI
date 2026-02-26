@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../config/mysql');
+const db = require('../server');
 const auth = require('../middleware/auth');
 
 router.post('/', auth, async (req, res) => {
