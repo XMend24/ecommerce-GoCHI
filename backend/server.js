@@ -5,12 +5,15 @@ const cors = require('cors');
 const app = express();
 const carritoRoutes = require('./routes/carritoMySQL');
 const pool = mysql.createPool({
-host: 'trolley.proxy.rlwy.net',
+host: 'trolley.proxy.rlwy.net', 
 user: 'root',
 password: 'ZqzjlOoiaeyMxjujIxEaSMnqNeslKlZF',
 database: 'railway',
 port: 17500, 
-});
+ssl: {
+rejectUnauthorized: false 
+}
+}).promise();
 // --- 1. Middlewares ---
 app.use(cors());
 app.use(express.json());
