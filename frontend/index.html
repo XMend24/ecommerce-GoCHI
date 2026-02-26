@@ -32,24 +32,29 @@
 
     <script src="./js/main.js"></script>
     <script>
-        window.onload = function() {
-            const token = localStorage.getItem('token');
-            const role = localStorage.getItem('role');
-            
-            if (!token) {
-                window.location.href = 'login.html';
-                return;
-            }
-            if (role === 'admin') {
-                document.getElementById('admin-link').style.display = 'inline';
-            }
-        };
+    window.onload = function() {
+        const token = localStorage.getItem('token');
+        const role = localStorage.getItem('role');
         
-        function logout() {
-            localStorage.removeItem('token');
-            localStorage.removeItem('role');
+        if (!token) {
             window.location.href = 'login.html';
+            return;
         }
-    </script>
+
+        if (role === 'admin') {
+            document.getElementById('admin-link').style.display = 'inline';
+        }
+
+        if (typeof cargarProductosDesdeBD === "function") {
+            cargarProductosDesdeBD();
+        }
+    };
+    
+    function logout() {
+        localStorage.removeItem('token');
+        localStorage.removeItem('role');
+        window.location.href = 'login.html';
+    }
+</script>
 </body>
 </html>

@@ -108,6 +108,3 @@ async function addToCart(productoId) {
         alert("Error de conexión con el servidor.");
     }
 }
-
-// INICIAR CARGA (Solo una vez)
-cargarProductosDesdeBD();
