@@ -7,7 +7,7 @@ const tituloPrincipal = document.querySelector(".titulo-principal");
 // --- 2. Carga Inicial ---
 async function cargarProductosDesdeBD() {
     try {
-        const response = await fetch('http://localhost:5000/api/products');
+        const response = await fetch('https://ecommerce-gochi.onrender.com/api/products');
         productos = await response.json();
         
         // Al cargar la página, mostramos "Todos" por defecto
