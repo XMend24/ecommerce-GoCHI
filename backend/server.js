@@ -3,6 +3,13 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const carritoRoutes = require('./routes/carritoMySQL');
+const pool = mysql.createPool({
+host: process.env.MYSQLHOST,
+user: process.env.MYSQLUSER,
+password: process.env.MYSQLPASSWORD,
+database: process.env.MYSQLDATABASE,
+port: process.env.MYSQLPORT || 17500, 
+});
 // --- 1. Middlewares ---
 app.use(cors());
 app.use(express.json());
