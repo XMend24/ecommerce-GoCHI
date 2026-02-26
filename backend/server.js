@@ -1,33 +1,38 @@
-//require('dotenv').config();
+// require('dotenv').config(); // Comentado por ahora como pediste
 const mysql = require('mysql2'); 
 const express = require('express');
 const cors = require('cors');
 const app = express();
-const carritoRoutes = require('./routes/carritoMySQL');
+
+// --- 1. Conexión a Base de Datos (UNIFICADA) ---
+// Usamos la URL completa que es el método más seguro
 const pool = mysql.createPool({
-uri: 'mysql://root:ZqzjlOoiaeyMxjujIxEaSMnqNeslKlZF@trolley.proxy.rlwy.net:17500/railway',
-ssl: {
-    rejectUnauthorized: false
-}
+    uri: 'mysql://root:ZqzjlOoiaeyMxjujIxEaSMnqNeslKlZF@trolley.proxy.rlwy.net:17500/railway',
+    ssl: {
+        rejectUnauthorized: false
+    },
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
 }).promise();
 
-// --- 1. Middlewares ---
+// Prueba de conexión inmediata con log detallado
+pool.query('SELECT 1')
+    .then(() => console.log('✅ ¡CONEXIÓN EXITOSA CON RAILWAY!'))
+    .catch(err => console.error('❌ Error detallado de conexión:', err.code, err.message));
+
+// Exportamos el pool para que tus rutas lo usen si lo necesitan
+// Nota: Si tus archivos en ./routes/ usan 'require(../config/mysql)', 
+// deberías editar ese archivo también con estos mismos datos.
+module.exports = pool; 
+
+// --- 2. Middlewares ---
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); 
-app.use('/api/carrito', carritoRoutes); 
-
-// --- 2. Conexión a Base de Datos ---
-
-const db = require('./config/mysql'); 
-
-// Verificamos la conexión al iniciar (Opcional pero recomendado)
-db.query('SELECT 1')
-.then(() => console.log('✅ Conectado a MySQL (Pool)'))
-.catch(err => console.error('❌ Error conectando a MySQL:', err));
 
 // --- 3. Rutas (Endpoints) ---
-// Nota: Les quité el "-mysql" al final para que las URLs sean más limpias
+// Asegúrate de que estos archivos no intenten conectar a localhost por su cuenta
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/products', require('./routes/products'));
 app.use('/api/carrito', require('./routes/carritoMySQL'));
@@ -35,7 +40,10 @@ app.use('/api/pedidos', require('./routes/pedidosMySQL'));
 app.use('/api/bitacora', require('./routes/bitacoraMySQL'));
 
 // --- 4. Encender Servidor ---
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, '0.0.0.0',() => {
-    console.log(`🚀 ¡ESTE ES EL NUEVO CÓDIGO CON DATOS FIJOS! ${PORT}`);
+// Render usa el puerto 10000 por defecto
+const PORT = process.env.PORT || 10000; 
+
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`🚀 Servidor corriendo en puerto ${PORT}`);
+    console.log(`🚀 Intentando conectar a Railway en trolley.proxy.rlwy.net:17500...`);
 });
