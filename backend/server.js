@@ -40,5 +40,5 @@ app.use('/api/bitacora', require('./routes/bitacoraMySQL'));
 // --- 4. Encender Servidor ---
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, '0.0.0.0',() => {
-    console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
+    console.log(`🚀 ¡ESTE ES EL NUEVO CÓDIGO CON DATOS FIJOS! ${PORT}`);
 });
