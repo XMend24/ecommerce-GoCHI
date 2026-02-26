@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel Admin - Ecommerce</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <h1>Panel de Administrador</h1>
+    <p>Bienvenido, admin. Aquí puedes gestionar productos.</p>
+    
+    <h2>Crear Producto</h2>
+    <form onsubmit="createProduct(); return false;">
+        <input id="prod-name" placeholder="Nombre" required>
+        <input id="prod-price" type="number" placeholder="Precio" required>
+        <input id="prod-desc" placeholder="Descripción" required>
+        <button type="submit">Crear</button>
+    </form>
+    
+    <script>
+        function createProduct() {
+            const name = document.getElementById('prod-name').value;
+            const price = document.getElementById('prod-price').value;
+            const description = document.getElementById('prod-desc').value;
+            const token = localStorage.getItem('token');
+            
+            fetch('http://localhost:5000/api/products', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify({ name, price, description })
+            })
+            .then(res => res.json())
+            .then(data => alert(data.message))
+            .catch(err => alert('Error: ' + err.message));
+        }
+    </script>
+
+    <hr>
+
+    <h2>Bitácora de Acciones</h2>
+    <table class="table table-striped table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>ID</th>
+                <th>Usuario ID</th>
+                <th>Acción</th>
+                <th>Descripción</th>
+                <th>Fecha</th>
+            </tr>
+        </thead>
+        <tbody id="bitacoraBody">
+            <!-- Se carga dinámicamente -->
+        </tbody>
+    </table>
+
+    <button onclick="logout()">Cerrar Sesión</button>
+    
+    <script>
+        function getToken() {
+            return localStorage.getItem('token');
+        }
+
+        function getRole() {
+            return localStorage.getItem('role');
+        }
+
+        async function loadBitacora() {
+            const token = getToken();
+            const role = getRole();
+            
+            if (!token || role !== 'admin') {
+                alert('Acceso denegado');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            try {
+                const response = await fetch('http://localhost:5000/api/bitacora-mysql', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (response.ok) {
+                    const logs = await response.json();
+                    const tbody = document.getElementById('bitacoraBody');
+                    tbody.innerHTML = '';
+                    
+                    if (logs.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="5" class="text-center">No hay registros en la bitácora</td></tr>';
+                        return;
+                    }
+                    
+                    logs.forEach(log => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${log.id}</td>
+                            <td>${log.usuario_id || 'N/A'}</td>
+                            <td><span class="badge badge-info">${log.accion}</span></td>
+                            <td>${log.descripcion || 'Sin descripción'}</td>
+                            <td>${new Date(log.createdAt).toLocaleString()}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                } else {
+                    console.error('Error al cargar bitácora:', response.statusText);
+                }
+            } catch (err) {
+                console.error('Error:', err);
+            }
+        }
+
+        window.onload = function() {
+            const token = getToken();
+            const role = getRole();
+            
+            if (!token || role !== 'admin') {
+                alert('Acceso denegado');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            console.log('Acceso admin concedido');
+            loadBitacora();  // Cargar bitácora al abrir la página
+        };
+        
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('role');
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>
