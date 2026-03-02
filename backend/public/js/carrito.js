@@ -12,7 +12,7 @@ async function cargarCarrito() {
     }
 
     try {
-        const response = await fetch('http://localhost:5000/api/carrito', {
+        const response = await fetch('/api/carrito', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         const items = await response.json();
@@ -87,7 +87,7 @@ async function eliminarDelCarrito(carritoId) {
     if (!confirm("¿Seguro que quieres quitar este producto?")) return;
 
     try {
-        const response = await fetch(`http://localhost:5000/api/carrito/${carritoId}`, {
+        const response = await fetch(`/api/carrito/${carritoId}`, {
             method: 'DELETE',
             headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -108,7 +108,7 @@ async function vaciarCarrito() {
     const token = localStorage.getItem('token');
 
     try {
-        const response = await fetch('http://localhost:5000/api/carrito/vaciar/todo', {
+        const response = await fetch('/api/carrito/vaciar/todo', {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${token}`
