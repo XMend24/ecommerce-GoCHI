@@ -2,13 +2,18 @@ const express = require('express');
 const router = express.Router();
 const db = require('../server');
 const { verificarToken } = require('../middleware/auth');
+const { registrarAccion } = require('../utils/logger');
 
 // 1. POST: Agregar un producto al carrito
 router.post('/', verificarToken, async (req, res) => {
     try {
         const { producto_id, cantidad } = req.body;
         const usuario_id = req.user.id; // Viene del token
-
+            await registrarAccion(
+            usuario_id, 
+            'CARRITO_AGREGAR', 
+            `El usuario agregó "${nombre_producto || 'Producto ID: ' + producto_id}" al carrito.`
+        );
         // Buscar si el producto ya está en el carrito de este usuario
         const [existe] = await db.query(
             'SELECT * FROM carrito WHERE usuario_id = ? AND producto_id = ?',
@@ -65,7 +70,11 @@ router.get('/', verificarToken, async (req, res) => {
 router.delete('/vaciar/todo', verificarToken, async (req, res) => {
     try {
         const usuario_id = req.user.id; 
-
+            await registrarAccion(
+            usuario_id, 
+            'CARRITO_ELIMINAR', 
+            `El usuario eliminó todo su carrito.`
+        );
         const [result] = await db.query(
             'DELETE FROM carrito WHERE usuario_id = ?',
             [usuario_id]
@@ -82,7 +91,11 @@ router.delete('/:id', verificarToken, async (req, res) => {
     try {
         const carrito_id = req.params.id;
         const usuario_id = req.user.id; // Seguridad: Solo el dueño puede borrarlo
-
+            await registrarAccion(
+            usuario_id, 
+            'CARRITO_ELIMINAR', 
+            `El usuario eliminó el producto ID: ${producto_id} de su carrito.`
+        );
         const [result] = await db.query(
             'DELETE FROM carrito WHERE id = ? AND usuario_id = ?',
             [carrito_id, usuario_id]

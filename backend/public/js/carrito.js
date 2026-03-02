@@ -84,6 +84,9 @@ function renderizarCarrito(items) {
 // Función para eliminar un producto específico (DELETE)
 async function eliminarDelCarrito(carritoId) {
     const token = localStorage.getItem('token');
+    const boton = event.target.closest('button');
+    const contenedorProducto = boton.closest('.carrito-producto');
+    const nombreProducto = contenedorProducto.querySelector('h3').innerText;
     if (!confirm("¿Seguro que quieres quitar este producto?")) return;
 
     try {
@@ -91,7 +94,7 @@ async function eliminarDelCarrito(carritoId) {
             method: 'DELETE',
             headers: { 'Authorization': `Bearer ${token}` }
         });
-
+        body: JSON.stringify({ nombre_producto: nombreProducto })
         if (response.ok) {
             cargarCarrito(); // Recargamos la lista para que desaparezca el item
         }

@@ -81,8 +81,9 @@ async function addToCart(productoId) {
         alert("Debes iniciar sesión para agregar productos.");
         window.location.href = "login.html";
         return;
-    }
-
+    }  
+    const productoEncontrado = productos.find(p => p.id === productoId);
+    const nombreProducto = productoEncontrado ? productoEncontrado.titulo : "Producto desconocido";
     try {
         const response = await fetch(`${BASE_URL}/carrito`, { // URL DE RENDER
             method: 'POST',
