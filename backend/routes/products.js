@@ -2,6 +2,7 @@ const express = require('express');
 const db = require('../server'); 
 const router = express.Router();
 const { verificarToken } = require('../middleware/auth'); 
+const { registrarAccion } = require('../utils/logger');
 
 // --- MIDDLEWARE PARA VALIDAR SI ES ADMIN ---
 const esAdmin = (req, res, next) => {
@@ -47,6 +48,7 @@ router.post('/', verificarToken, esAdmin, async (req, res) => {
         console.error("Error al subir producto:", error);
         res.status(500).json({ error: error.message });
     }
+    await registrarAccion(req.user.id, 'PRODUCTO_NUEVO', `Se creó el producto: ${nombre}`);
 });
 
 module.exports = router;

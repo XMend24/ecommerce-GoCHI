@@ -40,3 +40,32 @@ const confirmar = confirm("¿Estás seguro de que todos los datos son correctos?
         alert("No se pudo conectar con el servidor.");
     }
 });
+async function cargarBitacora() {
+    const token = localStorage.getItem('token');
+    try {
+        const response = await fetch('/api/bitacora', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const logs = await response.json();
+        
+        const contenedor = document.querySelector("#tabla-bitacora");
+        contenedor.innerHTML = ""; // Limpiar mensaje de carga
+
+        logs.forEach(log => {
+            const div = document.createElement("div");
+            div.classList.add("log-entry");
+            const fecha = new Date(log.createdAt).toLocaleString();
+            
+            div.innerHTML = `
+                <span class="log-fecha">${fecha}</span>
+                <span class="log-accion">${log.accion}</span>
+                <span class="log-desc">${log.descripcion}</span>
+            `;
+            contenedor.appendChild(div);
+        });
+    } catch (error) {
+        console.error("Error al cargar bitácora", error);
+    }
+}
+
+cargarBitacora();

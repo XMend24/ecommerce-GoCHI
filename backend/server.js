@@ -1,4 +1,4 @@
-// require('dotenv').config(); // Comentado por ahora como pediste
+require('dotenv').config(); 
 const mysql = require('mysql2'); 
 const express = require('express');
 const cors = require('cors');
@@ -7,7 +7,7 @@ const path = require('path');
 // --- 1. Conexión a Base de Datos (UNIFICADA) ---
 // Usamos la URL completa que es el método más seguro
 const pool = mysql.createPool({
-    uri: 'mysql://root:ZqzjlOoiaeyMxjujIxEaSMnqNeslKlZF@trolley.proxy.rlwy.net:17500/railway',
+    uri: process.env.DATABASE_URL || 'tu_uri_de_respaldo',
     ssl: {
         rejectUnauthorized: false
     },

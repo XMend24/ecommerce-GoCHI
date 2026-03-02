@@ -267,3 +267,31 @@ main{
     font-size: 0.9rem;
     margin-top: 1rem;
 }
+
+.bitacora-container {
+    margin-top: 2rem;
+    background-color: var(--clr-white);
+    padding: 1.5rem;
+    border-radius: 1rem;
+    width: 100%;
+    max-width: 800px; 
+}
+
+.log-entry {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.8rem;
+    border-bottom: 1px solid var(--clr-gray);
+    font-size: 0.85rem;
+}
+
+.log-accion {
+    font-weight: 700;
+    color: var(--clr-main-light);
+    min-width: 150px;
+}
+
+.log-fecha {
+    color: gray;
+    font-style: italic;
+}
