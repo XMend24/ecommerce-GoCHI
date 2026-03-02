@@ -13,7 +13,7 @@ try {
 }
 });
 
-router.post('/', auth, async (req, res) => {
+router.post('/', verificarToken, async (req, res) => {
 try {
     const log = await Bitacora.create({ usuario_id: req.user.id, ...req.body });
     res.json(log);

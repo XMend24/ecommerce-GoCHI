@@ -13,7 +13,7 @@ try {
 }
 });
 
-router.get('/', auth, async (req, res) => {
+router.get('/', verificarToken, async (req, res) => {
 try {
     const pedidos = await Pedido.findAll({ where: { usuario_id: req.user.id } });
     res.json(pedidos);
@@ -22,7 +22,7 @@ try {
 }
 });
 
-router.put('/:id', auth, async (req, res) => {
+router.put('/:id', verificarToken, async (req, res) => {
 try {
     const [updated] = await Pedido.update(req.body, { where: { id: req.params.id, usuario_id: req.user.id } });
     if (updated) {
@@ -36,7 +36,7 @@ try {
 }
 });
 
-router.delete('/:id', auth, async (req, res) => {
+router.delete('/:id', verificarToken, async (req, res) => {
 try {
     const deleted = await Pedido.destroy({ where: { id: req.params.id, usuario_id: req.user.id } });
     if (deleted) {
