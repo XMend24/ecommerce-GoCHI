@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const db = require('../server');
 const router = express.Router();
+const { registrarAccion } = require('../utils/logger');
 
 // [RF-01] Registro
 router.post('/register', async (req, res) => {
@@ -46,7 +47,7 @@ router.post('/login', async (req, res) => {
         if (!isMatch) {
             return res.status(401).json({ error: 'Credenciales inválidas' });
         }
-
+        await registrarAccion(user.id, 'LOGIN', 'El usuario inició sesión correctamente');
         // 3. Generar token
         const token = jwt.sign(
             { id: user.id, role: user.role }, 
