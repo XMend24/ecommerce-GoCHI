@@ -1,6 +1,13 @@
 document.querySelector("#form-producto").addEventListener("submit", async (e) => {
     e.preventDefault();
 
+const confirmar = confirm("¿Estás seguro de que todos los datos son correctos? El producto se publicará inmediatamente.");
+    
+    if (!confirmar) {
+        console.log("Publicación cancelada por el usuario");
+        return; 
+    }
+
     const token = localStorage.getItem('token');
     const nuevoProducto = {
         nombre: document.querySelector("#nombre").value,
