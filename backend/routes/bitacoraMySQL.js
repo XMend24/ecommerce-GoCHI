@@ -3,7 +3,7 @@ const router = express.Router();
 const db = require('../server');
 const { verificarToken } = require('../middleware/auth'); 
 
-router.get('/', auth, async (req, res) => {
+router.get('/', verificarToken, async (req, res) => {
 if (req.user.rol !== 'admin') return res.status(403).json({ error: 'Acceso denegado' });
 try {
     const logs = await Bitacora.findAll({ order: [['createdAt', 'DESC']] });

@@ -3,7 +3,7 @@ const router = express.Router();
 const db = require('../server');
 const { verificarToken } = require('../middleware/auth');
 
-router.post('/', auth, async (req, res) => {
+router.post('/', verificarToken, async (req, res) => {
 try {
     const pedido = await Pedido.create({ usuario_id: req.user.id, ...req.body });
     await Bitacora.create({ usuario_id: req.user.id, accion: 'CREATE_ORDER', descripcion: `Pedido ID ${pedido.id} creado` });
