@@ -4,25 +4,40 @@
     <meta charset="UTF-8">
     <title>Panel Admin - G☆CHI</title>
     <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 </head>
 <body>
-    <div class="wrapper">
-        <main>
-            <h2 class="titulo-principal">Subir Nuevo Producto</h2>
-            <form id="form-producto" class="form-container">
-                <input type="text" id="nombre" placeholder="Nombre del producto" required>
-                <input type="number" id="precio" placeholder="Precio" step="0.01" required>
-                <textarea id="descripcion" placeholder="Descripción"></textarea>
-                <input type="text" id="imagen_url" placeholder="URL de la imagen">
-                <select id="categoria">
-                    <option value="pulseras">Pulseras</option>
-                    <option value="rosarios">Rosarios</option>
-                </select>
-                <button type="submit" class="boton-menu">Publicar Producto</button>
-                <a href="index.html">Volver a la tienda</a>
-            </form>
-        </main>
+    
+    <div class="admin-main-container">
+        
+        <form id="form-producto" class="form-container">
+            <h2><i class="bi bi-box-seam"></i> Nuevo Producto</h2>
+            
+            <input type="text" id="nombre" placeholder="Nombre del producto" required>
+            
+            <input type="number" id="precio" placeholder="Precio (ej: 15.50)" step="0.01" required>
+            
+            <textarea id="descripcion" placeholder="Escribe una breve descripción..." rows="3"></textarea>
+            
+            <input type="text" id="imagen_url" placeholder="URL de la imagen (PostImages/Imgur)">
+            
+            <select id="categoria">
+                <option value="" disabled selected>Selecciona una categoría</option>
+                <option value="pulseras">Pulseras</option>
+                <option value="rosarios">Rosarios</option>
+            </select>
+            
+            <button type="submit" class="boton-publicar">
+                Publicar Producto
+            </button>
+            
+            <a href="index.html" class="link-volver">
+                <i class="bi bi-arrow-left"></i> Volver a la tienda
+            </a>
+        </form>
+
     </div>
+
     <script src="./js/admin.js"></script>
 </body>
 </html>

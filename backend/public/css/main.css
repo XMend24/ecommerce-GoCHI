@@ -193,3 +193,77 @@ main{
     background-color: var(--clr-white);
     color: var(--clr-main);
 }
+
+/* Contenedor que centra el formulario en pantalla completa */
+.admin-main-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: var(--clr-main); /* Usa tu azul principal */
+    padding: 2rem;
+}
+
+/* Tarjeta del formulario */
+.form-container {
+    background-color: var(--clr-white); /* Usa tu blanco de la tienda */
+    padding: 3rem;
+    border-radius: 2rem;
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.form-container h2 {
+    color: var(--clr-main);
+    text-align: center;
+    margin-bottom: 1rem;
+    font-size: 1.8rem;
+}
+
+/* Estilo para los inputs y select del administrador */
+.form-container input, 
+.form-container textarea, 
+.form-container select {
+    background-color: var(--clr-gray);
+    border: 2px solid transparent;
+    padding: 1rem;
+    border-radius: 1rem;
+    color: var(--clr-main);
+    font-size: 1rem;
+    outline: none;
+    transition: .2s;
+}
+
+.form-container input:focus, 
+.form-container textarea:focus {
+    border-color: var(--clr-main);
+}
+
+/* Reutilizamos tu estilo de botón de menú para el botón de publicar */
+.form-container .boton-publicar {
+    background-color: var(--clr-main);
+    color: var(--clr-white);
+    padding: 1rem;
+    border-radius: 1rem;
+    border: 0;
+    text-transform: uppercase;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.form-container .boton-publicar:hover {
+    background-color: var(--clr-main-light);
+    transform: scale(1.02);
+}
+
+.form-container .link-volver {
+    text-align: center;
+    color: var(--clr-main);
+    font-size: 0.9rem;
+    margin-top: 1rem;
+}
