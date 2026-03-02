@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../server');
-const verificarToken = require('../middleware/auth'); // Asegúrate de que la ruta a tu middleware sea correcta
+const { verificarToken } = require('../middleware/auth');
 
 // 1. POST: Agregar un producto al carrito
 router.post('/', verificarToken, async (req, res) => {

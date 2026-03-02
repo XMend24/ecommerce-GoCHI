@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../server');
-const auth = require('../middleware/auth');
+const { verificarToken } = require('../middleware/auth'); 
 
 router.get('/', auth, async (req, res) => {
 if (req.user.rol !== 'admin') return res.status(403).json({ error: 'Acceso denegado' });

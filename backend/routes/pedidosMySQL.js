@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../server');
-const auth = require('../middleware/auth');
+const { verificarToken } = require('../middleware/auth');
 
 router.post('/', auth, async (req, res) => {
 try {
