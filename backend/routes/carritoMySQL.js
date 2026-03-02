@@ -93,8 +93,9 @@ router.delete('/:id', verificarToken, async (req, res) => {
     try {
         const carrito_id = req.params.id;
         const usuario_id = req.user.id;
-        // Extraemos el nombre del producto que enviamos desde carrito.js
-        const { nombre_producto } = req.body;
+        
+        // Usamos un valor por defecto por si el body llega vacío
+        const nombre_producto = req.body.nombre_producto || "Producto";
 
         const [result] = await db.query(
             'DELETE FROM carrito WHERE id = ? AND usuario_id = ?',
@@ -102,16 +103,18 @@ router.delete('/:id', verificarToken, async (req, res) => {
         );
 
         if (result.affectedRows > 0) {
+            // Registramos en la bitácora
             await registrarAccion(
                 usuario_id, 
                 'CARRITO_ELIMINAR', 
-                `El usuario eliminó "${nombre_producto || 'ID: ' + carrito_id}" de su carrito.`
+                `El usuario eliminó "${nombre_producto}" de su carrito.`
             );
-            res.json({ message: "Producto eliminado del carrito" });
+            return res.json({ message: "Producto eliminado" });
         } else {
-            res.status(404).json({ error: "No se encontró el producto" });
+            return res.status(404).json({ error: "No se encontró el registro" });
         }
     } catch (error) {
+        console.error("Error al borrar item:", error);
         res.status(500).json({ error: error.message });
     }
 });

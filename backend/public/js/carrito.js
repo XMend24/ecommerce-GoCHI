@@ -84,19 +84,30 @@ function renderizarCarrito(items) {
 // Función para eliminar un producto específico (DELETE)
 async function eliminarDelCarrito(carritoId) {
     const token = localStorage.getItem('token');
+    
+    // Capturamos el nombre del producto para la bitácora
     const boton = event.target.closest('button');
     const contenedorProducto = boton.closest('.carrito-producto');
     const nombreProducto = contenedorProducto.querySelector('h3').innerText;
-    if (!confirm("¿Seguro que quieres quitar este producto?")) return;
+
+    if (!confirm(`¿Seguro que quieres quitar "${nombreProducto}"?`)) return;
 
     try {
         const response = await fetch(`/api/carrito/${carritoId}`, {
             method: 'DELETE',
-            headers: { 'Authorization': `Bearer ${token}` }
+            headers: { 
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json' // Crucial para que el backend lea el body
+            },
+            body: JSON.stringify({ nombre_producto: nombreProducto }) 
         });
-        body: JSON.stringify({ nombre_producto: nombreProducto })
+
         if (response.ok) {
-            cargarCarrito(); // Recargamos la lista para que desaparezca el item
+            // Importante: No solo llamar a cargarCarrito, sino verificar que el DOM se actualice
+            await cargarCarrito(); 
+        } else {
+            console.error("Error en la respuesta del servidor");
+            alert("No se pudo eliminar el producto.");
         }
     } catch (error) {
         console.error("Error al eliminar:", error);
