@@ -34,7 +34,6 @@ router.get('/', async (req, res) => {
 });
 
 // POST /api/products - Crear producto (PROTEGIDO)
-// Agregamos 'verificarToken' para saber quién es, y 'esAdmin' para ver si tiene permiso
 router.post('/', verificarToken, esAdmin, async (req, res) => {
     try {
         const { nombre, precio, descripcion, imagen_url, categoria } = req.body;
@@ -42,13 +41,16 @@ router.post('/', verificarToken, esAdmin, async (req, res) => {
         // Añadimos 'categoria' a la consulta SQL para que no se pierda ese dato
         const sql = 'INSERT INTO productos (nombre, precio, descripcion, imagen_url, categoria) VALUES (?, ?, ?, ?, ?)';
         const [result] = await db.query(sql, [nombre, precio, descripcion, imagen_url, categoria]);
-        
+        await registrarAccion(
+            req.user.id, 
+            'PRODUCTO CREADO', 
+            `Se añadió el producto "${nombre}" con un precio de $${precio}`
+        );
         res.json({ message: '✅ Producto creado con éxito', id: result.insertId });
     } catch (error) {
         console.error("Error al subir producto:", error);
         res.status(500).json({ error: error.message });
     }
-    await registrarAccion(req.user.id, 'PRODUCTO_NUEVO', `Se creó el producto: ${nombre}`);
 });
 
 module.exports = router;
