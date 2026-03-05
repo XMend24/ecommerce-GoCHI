@@ -17,9 +17,29 @@
                     <li><button class="boton-menu boton-categoria">Pulseras</button></li>
                     <li><button class="boton-menu boton-categoria">Rosarios</button></li>
                     <li><a class="boton-menu" href="./carrito.html"><i class="bi bi-cart-fill"></i> Carrito</a></li>
-                    <li><a class="boton-menu" href="profile.html">Editar Perfil</a></li>
-                    <li><a href="admin.html" id="admin-link" style="display: none;">Panel Admin</a></li>
-                    <li><button class="boton-menu" onclick="logout()"><i class="bi bi-people-fill"></i> Cerrar Sesión</button></li>
+                    <div class="user-menu-container">
+    <button id="user-menu-btn" class="boton-menu user-btn">
+        <i class="bi bi-person-circle"></i>
+        <span id="user-name-display">Cargando...</span>
+        <i class="bi bi-chevron-up"></i>
+    </button>
+
+    <div id="user-menu-dropdown" class="user-menu-content">
+        <a href="perfil.html" class="menu-item">
+            <i class="bi bi-person-gear"></i> Editar Perfil
+        </a>
+        
+        <a href="admin.html" id="admin-link" class="menu-item admin-only">
+            <i class="bi bi-shield-lock"></i> Panel Admin
+        </a>
+        
+        <div class="menu-divider"></div>
+        
+        <button id="cerrar-sesion-btn" class="menu-item logout-item">
+            <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+        </button>
+    </div>
+</div>
                 </ul>
             </nav>
         </aside>

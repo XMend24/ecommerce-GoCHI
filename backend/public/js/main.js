@@ -109,3 +109,43 @@ async function addToCart(productoId) {
         alert("Error de conexión con el servidor.");
     }
 }
+document.addEventListener("DOMContentLoaded", () => {
+    configurarMenuUsuario();
+});
+
+function configurarMenuUsuario() {
+    const userMenuBtn = document.querySelector("#user-menu-btn");
+    const userMenuDropdown = document.querySelector("#user-menu-dropdown");
+    const nameDisplay = document.querySelector("#user-name-display");
+    const adminLink = document.querySelector("#admin-link");
+    const logoutBtn = document.querySelector("#cerrar-sesion-btn");
+
+    // 1. Obtener datos del usuario (Asegúrate de guardar 'userEmail' y 'userRole' en el login)
+    const userEmail = localStorage.getItem('userEmail') || "Usuario";
+    const userRole = localStorage.getItem('userRole'); // 'admin' o 'user'
+
+    // Cortar el email para mostrar solo el nombre antes del @
+    nameDisplay.innerText = userEmail.split('@')[0];
+
+    // 2. Mostrar Panel Admin solo si es administrador
+    if (userRole === 'admin') {
+        adminLink.style.display = "flex";
+    }
+
+    // 3. Toggle del menú (Abrir/Cerrar)
+    userMenuBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        userMenuDropdown.classList.toggle("active");
+    });
+
+    // Cerrar al hacer clic afuera
+    document.addEventListener("click", () => {
+        userMenuDropdown.classList.remove("active");
+    });
+
+    // 4. Lógica de Cerrar Sesión
+    logoutBtn.addEventListener("click", () => {
+        localStorage.clear();
+        window.location.href = "login.html";
+    });
+}

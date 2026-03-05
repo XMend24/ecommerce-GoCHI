@@ -295,3 +295,76 @@ main{
     color: gray;
     font-style: italic;
 }
+/* Contenedor principal */
+.user-menu-container {
+    position: relative;
+    margin-top: auto; /* Lo empuja al final del sidebar */
+    padding: 1rem;
+}
+
+/* El botón principal */
+.user-btn {
+    width: 100%;
+    justify-content: space-between !important;
+    background-color: var(--clr-main-light) !important;
+    border-radius: 1rem !important;
+    padding: 0.8rem 1rem !important;
+    transition: 0.3s;
+}
+
+.user-btn:hover {
+    filter: brightness(1.1);
+}
+
+/* El panel que se despliega (oculto por defecto) */
+.user-menu-content {
+    display: none; 
+    position: absolute;
+    bottom: 110%; /* Aparece ARRIBA del botón */
+    left: 1rem;
+    right: 1rem;
+    background-color: var(--clr-white);
+    border-radius: 1rem;
+    box-shadow: 0 -10px 20px rgba(0,0,0,0.1);
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 100;
+}
+
+/* Mostrar cuando tiene la clase 'active' */
+.user-menu-content.active {
+    display: flex;
+}
+
+/* Ítems del menú */
+.menu-item {
+    padding: 0.8rem 1rem;
+    color: var(--clr-main);
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 0.9rem;
+    border: none;
+    background: none;
+    width: 100%;
+    cursor: pointer;
+    text-align: left;
+}
+
+.menu-item:hover {
+    background-color: var(--clr-gray);
+}
+
+.menu-divider {
+    height: 1px;
+    background-color: var(--clr-gray);
+    margin: 0.2rem 0;
+}
+
+.logout-item {
+    color: var(--clr-red);
+}
+
+.admin-only {
+    display: none; /* Se activa por JS */
+}
