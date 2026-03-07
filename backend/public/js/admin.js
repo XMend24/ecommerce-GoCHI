@@ -67,5 +67,28 @@ async function cargarBitacora() {
         console.error("Error al cargar bitácora", error);
     }
 }
+// --- FUNCION ELIMINAR ---
+async function eliminarProducto(id) {
+    const token = localStorage.getItem('token');
+    if (!confirm("¿Estás seguro de eliminar este producto? Esta acción no se puede deshacer.")) return;
 
+    try {
+        const response = await fetch(`/api/products/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (response.ok) {
+            alert("Producto eliminado");
+            location.reload(); // Recargamos para ver los cambios
+        }
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+// --- FUNCION EDITAR (Redirigir al panel con los datos) ---
+function prepararEdicion(id) {
+    window.location.href = `admin.html?edit=${id}`;
+}
 cargarBitacora();

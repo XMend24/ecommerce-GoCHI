@@ -27,16 +27,32 @@ function renderizarProductos(productosElegidos) {
     if (!contenedorProductos) return;
     contenedorProductos.innerHTML = "";
 
+    // 1. OBTENEMOS EL ROL DEL USUARIO
+    const userRole = localStorage.getItem('userRole');
+
     productosElegidos.forEach(producto => {
-        // Si imagen está vacío o es null, usamos la de repuesto
         const imagenFinal = (producto.imagen && producto.imagen.trim() !== "") 
                             ? producto.imagen 
                             : './img/abrigos/accesorio1.jpeg';
 
+        // 2. CREAMOS LOS BOTONES SOLO SI ES ADMIN
+        let botonesAdmin = "";
+        if (userRole === 'admin') {
+            botonesAdmin = `
+                <div class="admin-controls">
+                    <button class="btn-edit" onclick="prepararEdicion(${producto.id})"><i class="bi bi-pencil-square"></i></button>
+                    <button class="btn-delete" onclick="eliminarProducto(${producto.id})"><i class="bi bi-trash"></i></button>
+                </div>
+            `;
+        }
+
         const div = document.createElement("div");
         div.classList.add("producto");
         div.innerHTML = `
-            <img class="producto-imagen" src="${imagenFinal}" alt="${producto.titulo}">
+            <div class="producto-imagen-container">
+                ${botonesAdmin} 
+                <img class="producto-imagen" src="${imagenFinal}" alt="${producto.titulo}">
+            </div>
             <div class="producto-detalles">
                 <h3 class="producto-titulo">${producto.titulo}</h3>
                 <p class="producto-precio">$${producto.precio}</p>

@@ -53,4 +53,42 @@ router.post('/', verificarToken, esAdmin, async (req, res) => {
     }
 });
 
+// --- ELIMINAR PRODUCTO ---
+router.delete('/:id', verificarToken, esAdmin, async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        // Primero obtenemos el nombre para la bitácora antes de borrarlo
+        const [producto] = await db.query('SELECT nombre FROM productos WHERE id = ?', [id]);
+        
+        if (producto.length === 0) return res.status(404).json({ error: "Producto no encontrado" });
+
+        await db.query('DELETE FROM productos WHERE id = ?', [id]);
+
+        // Registro en Bitácora
+        await registrarAccion(req.user.id, 'PRODUCTO_ELIMINAR', `Eliminó el producto: ${producto[0].nombre} (ID: ${id})`);
+
+        res.json({ message: "Producto eliminado con éxito" });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// --- EDITAR PRODUCTO ---
+router.put('/:id', verificarToken, esAdmin, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { nombre, precio, descripcion, imagen_url, categoria } = req.body;
+
+        const sql = `UPDATE productos SET nombre=?, precio=?, descripcion=?, imagen_url=?, categoria=? WHERE id=?`;
+        await db.query(sql, [nombre, precio, descripcion, imagen_url, categoria, id]);
+
+        await registrarAccion(req.user.id, 'PRODUCTO_EDITAR', `Editó los detalles de: ${nombre}`);
+
+        res.json({ message: "Producto actualizado correctamente" });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 module.exports = router;
