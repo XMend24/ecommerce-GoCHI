@@ -13,7 +13,8 @@ try {
     if (response.ok) {
       // Guarda token y rol en localStorage para sesiones
     localStorage.setItem('token', data.token);
-    localStorage.setItem('role', data.role);
+    localStorage.setItem('userRole', data.role); 
+    localStorage.setItem('userEmail', data.email);
       // Redirige según rol (user a index.html, admin a admin.html)
     window.location.href = data.role === 'admin' ? 'admin.html' : 'index.html';
     } else {
