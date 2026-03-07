@@ -27,17 +27,24 @@ async function cargarDatosParaEditar(id) {
         const producto = await response.json();
 
         if (response.ok) {
-            document.getElementById('nombre').value = producto.nombre;
-            document.getElementById('precio').value = producto.precio;
-            document.getElementById('descripcion').value = producto.descripcion;
-            document.getElementById('imagen_url').value = producto.imagen_url;
-            document.getElementById('categoria').value = producto.categoria;
+            // Usamos || (o) para aceptar ambos nombres posibles
+            document.getElementById('nombre').value = producto.nombre || producto.titulo || "";
+            document.getElementById('precio').value = producto.precio || "";
+            document.getElementById('descripcion').value = producto.descripcion || "";
+            document.getElementById('imagen_url').value = producto.imagen_url || producto.imagen || "";
+            document.getElementById('categoria').value = producto.categoria || "";
             
-            // GUARDAMOS EL ID EN EL FORMULARIO (Dato clave)
-            formProducto.dataset.editId = id;
+            // MUY IMPORTANTE: Guardar el ID en el dataset del formulario
+            // Asegúrate de que el ID del formulario sea el correcto
+            const form = document.querySelector("#form-producto");
+            form.dataset.editId = id;
+
+            console.log("Datos cargados correctamente para el ID:", id);
+        } else {
+            console.error("Error al obtener producto:", producto.error);
         }
     } catch (error) {
-        console.error("Error al cargar datos:", error);
+        console.error("Error en la petición de carga:", error);
     }
 }
 
