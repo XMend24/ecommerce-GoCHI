@@ -33,6 +33,33 @@ router.get('/', async (req, res) => {
     }
 });
 
+// --- OBTENER UN SOLO PRODUCTO POR ID (PÚBLICO O ADMIN) ---
+router.get('/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const query = `
+            SELECT 
+                id, 
+                nombre, 
+                precio, 
+                descripcion, 
+                imagen_url, 
+                categoria 
+            FROM productos 
+            WHERE id = ?`;
+            
+        const [rows] = await db.query(query, [id]);
+
+        if (rows.length > 0) {
+            res.json(rows[0]); 
+        } else {
+            res.status(404).json({ error: "Producto no encontrado" });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // POST /api/products - Crear producto (PROTEGIDO)
 router.post('/', verificarToken, esAdmin, async (req, res) => {
     try {
