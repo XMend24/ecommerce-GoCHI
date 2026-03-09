@@ -8,9 +8,9 @@
 </head>
 <body>
     
-    <div class="admin-main-container">
+    <div class="admin-main-container" style="display: flex; gap: 30px; align-items: flex-start; flex-wrap: wrap;">
         
-        <form id="form-producto" class="form-container">
+        <form id="form-producto" class="form-container" style="flex: 1; min-width: 350px;">
             <h2 class="titulo-principal"><i class="bi bi-box-seam"></i> Nuevo Producto</h2>
             
             <input type="text" id="nombre" placeholder="Nombre del producto" required>
@@ -35,12 +35,14 @@
                 <i class="bi bi-arrow-left"></i> Volver a la tienda
             </a>
         </form>
-    <div class="bitacora-container">
-    <h3><i class="bi bi-journal-text"></i> Movimientos Recientes</h3>
-    <div id="tabla-bitacora">
-        <p>Cargando registros...</p>
-    </div>
-    </div>
+        <div class="bitacora-wrapper" style="flex: 1; min-width: 400px;">
+            <div class="bitacora-container">
+                <h3><i class="bi bi-journal-text"></i> Movimientos Recientes</h3>
+                <div id="tabla-bitacora">
+                <p>Cargando registros...</p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="./js/admin.js"></script>

@@ -98,25 +98,34 @@ formProducto.addEventListener("submit", async (e) => {
 
 // --- 3. LÓGICA DE LA BITÁCORA ---
 async function cargarBitacora() {
+    const token = localStorage.getItem('token');
     try {
         const response = await fetch('/api/bitacora', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        const logs = await response.json();
-        
+        let logs = await response.json();
+
         const contenedor = document.querySelector("#tabla-bitacora");
-        if (!contenedor) return;
         contenedor.innerHTML = ""; 
 
         logs.forEach(log => {
             const div = document.createElement("div");
             div.classList.add("log-entry");
-            const fecha = new Date(log.createdAt).toLocaleString();
             
+            // Formateamos la fecha para que ocupe menos espacio
+            const fechaObj = new Date(log.createdAt);
+            const fechaFormateada = fechaObj.toLocaleDateString() + " " + fechaObj.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            // Usamos colores según el tipo de acción para identificar rápido
+            let colorAccion = "#2c3e50"; // Color por defecto
+            if (log.accion.includes("ELIMINAR")) colorAccion = "#e74c3c"; // Rojo
+            if (log.accion.includes("EDITAR")) colorAccion = "#f39c12";   // Naranja
+            if (log.accion.includes("CREADO")) colorAccion = "#27ae60";   // Verde
+
             div.innerHTML = `
-                <span class="log-fecha">${fecha}</span>
-                <span class="log-accion">${log.accion}</span>
-                <span class="log-desc">${log.descripcion}</span>
+                <span class="log-fecha" style="color: #7f8c8d; font-weight: 500;">${fechaFormateada}</span>
+                <span class="log-accion" style="color: ${colorAccion}; font-weight: bold;">${log.accion}</span>
+                <span class="log-desc" style="color: #34495e;">${log.descripcion}</span>
             `;
             contenedor.appendChild(div);
         });
