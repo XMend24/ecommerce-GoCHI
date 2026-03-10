@@ -12,7 +12,7 @@ const name = document.getElementById('name').value;
 const token = localStorage.getItem('token');
 
 try {
-    const response = await fetch('http://localhost:5000/api/auth/profile', {
+    const response = await fetch('/api/auth/register', {
     method: 'PUT',
     headers: {
         'Content-Type': 'application/json',
