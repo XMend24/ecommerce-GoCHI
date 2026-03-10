@@ -2,16 +2,39 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Perfil - Ecommerce</title>
+    <title>Perfil - G☆CHIiseños</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-    <h1>Editar Perfil</h1>
-    <form onsubmit="updateProfile(); return false;">
-        <input id="name" placeholder="Nuevo Nombre" required>
-        <button type="submit">Actualizar</button>
-    </form>
-    <button onclick="logout()">Cerrar Sesión</button>
-    <script src="profile.js"></script>
+<body class="auth-body">
+    <div class="auth-card" style="max-width: 500px;">
+        <div class="profile-avatar" style="width: 80px; height: 80px; background: #eee; border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 2rem;">
+            <i class="bi bi-person"></i>
+        </div>
+        <h2>Mi Perfil</h2>
+        <p>Actualiza tu información personal.</p>
+
+        <form id="profile-form">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="input-group">
+                    <label>Nombre</label>
+                    <input type="text" id="perfil-nombre" value="Usuario Actual">
+                </div>
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" id="perfil-email" disabled style="background: #f9f9f9; cursor: not-allowed;">
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label>Nueva Contraseña (opcional)</label>
+                <input type="password" id="new-password" placeholder="Dejar en blanco para no cambiar">
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+                <button type="submit" class="btn-auth">Guardar Cambios</button>
+                <button type="button" class="btn-auth" style="background: #e74c3c;" onclick="window.location.href='index.html'">Cancelar</button>
+            </div>
+        </form>
+    </div>
 </body>
 </html>

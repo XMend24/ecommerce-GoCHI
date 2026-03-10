@@ -2,18 +2,31 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Registro - Ecommerce</title>
+    <title>Registro - G☆CHI</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-    <h1>Registrarse</h1>
-    <form onsubmit="register(); return false;">
-        <input id="name" placeholder="Nombre" required>
-        <input id="email" type="email" placeholder="Email" required>
-        <input id="password" type="password" placeholder="Contraseña" required>
-        <button type="submit">Registrar</button>
-    </form>
-    <p>¿Ya tienes cuenta? <a href="login.html">Inicia sesión</a></p>
-    <script src="register.js"></script>
+<body class="auth-body">
+    <div class="auth-card">
+        <h2>Crear Cuenta</h2>
+        <p>Únete a la comunidad exclusiva de G☆CHI.</p>
+        
+        <form id="register-form">
+            <div class="input-group">
+                <label>Nombre Completo</label>
+                <input type="text" id="nombre-reg" placeholder="Juan Pérez" required>
+            </div>
+            <div class="input-group">
+                <label>Correo Electrónico</label>
+                <input type="email" id="email-reg" placeholder="tu@correo.com" required>
+            </div>
+            <div class="input-group">
+                <label>Contraseña</label>
+                <input type="password" id="password-reg" placeholder="Mínimo 8 caracteres" required>
+            </div>
+            <button type="submit" class="btn-auth" style="background-color: var(--gold-accent);">Registrarme</button>
+        </form>
+        
+        <p style="margin-top: 20px;"><a href="login.html" style="color: #7f8c8d;">Ya tengo cuenta</a></p>
+    </div>
 </body>
 </html>
