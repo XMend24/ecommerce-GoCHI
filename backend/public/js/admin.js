@@ -7,16 +7,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     const editId = urlParams.get('edit');
 
     if (editId) {
-        // Configuramos la vista para EDICIÓN
         document.querySelector(".titulo-principal").innerText = "Editar Producto";
         const btnSubmit = document.querySelector("#btn-guardar") || document.querySelector("button[type='submit']");
         if (btnSubmit) btnSubmit.innerText = "Actualizar Producto";
 
-        // Cargamos los datos en el formulario
         await cargarDatosParaEditar(editId);
     }
 
-    // Cargamos la bitácora siempre al inicio
     cargarBitacora();
 });
 
@@ -27,15 +24,11 @@ async function cargarDatosParaEditar(id) {
         const producto = await response.json();
 
         if (response.ok) {
-            // Usamos || (o) para aceptar ambos nombres posibles
             document.getElementById('nombre').value = producto.nombre || producto.titulo || "";
             document.getElementById('precio').value = producto.precio || "";
             document.getElementById('descripcion').value = producto.descripcion || "";
-            document.getElementById('imagen_url').value = producto.imagen_url || producto.imagen || "";
             document.getElementById('categoria').value = producto.categoria || "";
             
-            // MUY IMPORTANTE: Guardar el ID en el dataset del formulario
-            // Asegúrate de que el ID del formulario sea el correcto
             const form = document.querySelector("#form-producto");
             form.dataset.editId = id;
 
@@ -52,7 +45,7 @@ async function cargarDatosParaEditar(id) {
 formProducto.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const editId = formProducto.dataset.editId; // ¿Tenemos un ID de edición?
+    const editId = formProducto.dataset.editId; 
     
     const confirmar = confirm(editId 
         ? "¿Estás seguro de actualizar este producto?" 
@@ -60,15 +53,21 @@ formProducto.addEventListener("submit", async (e) => {
     
     if (!confirmar) return;
 
-    const productoData = {
-        nombre: document.querySelector("#nombre").value,
-        precio: document.querySelector("#precio").value,
-        descripcion: document.querySelector("#descripcion").value,
-        imagen_url: document.querySelector("#imagen_url").value,
-        categoria: document.querySelector("#categoria").value
-    };
+    // --- CAMBIO PRINCIPAL: Usamos FormData para empaquetar archivos ---
+    const formData = new FormData();
+    formData.append('nombre', document.querySelector("#nombre").value);
+    formData.append('precio', document.querySelector("#precio").value);
+    formData.append('descripcion', document.querySelector("#descripcion").value);
+    formData.append('categoria', document.querySelector("#categoria").value);
 
-    // Definimos URL y MÉTODO dinámicamente
+    // Capturamos el archivo físico
+    // Ojo: Asegúrate de que en tu HTML el input de la imagen tenga id="imagenProducto"
+    const inputImagen = document.querySelector("#imagenProducto");
+    if (inputImagen && inputImagen.files.length > 0) {
+        // 'imagen' es el nombre del campo que esperará Multer en el backend
+        formData.append('imagen', inputImagen.files[0]);
+    }
+
     const metodo = editId ? 'PUT' : 'POST';
     const url = editId ? `/api/products/${editId}` : '/api/products';
 
@@ -76,17 +75,17 @@ formProducto.addEventListener("submit", async (e) => {
         const response = await fetch(url, {
             method: metodo,
             headers: {
-                'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify(productoData)
+            // Enviamos el objeto FormData directamente
+            body: formData 
         });
 
         const data = await response.json();
 
         if (response.ok) {
             alert(editId ? "✅ ¡Producto actualizado!" : "🚀 ¡Producto subido con éxito!");
-            window.location.href = "index.html";
+            window.location.reload(); // Recarga la página para ver los cambios en la tabla
         } else {
             alert("Error: " + data.error);
         }
@@ -106,21 +105,20 @@ async function cargarBitacora() {
         let logs = await response.json();
 
         const contenedor = document.querySelector("#tabla-bitacora");
+        if(!contenedor) return; 
         contenedor.innerHTML = ""; 
 
         logs.forEach(log => {
             const div = document.createElement("div");
             div.classList.add("log-entry");
             
-            // Formateamos la fecha para que ocupe menos espacio
             const fechaObj = new Date(log.createdAt);
             const fechaFormateada = fechaObj.toLocaleDateString() + " " + fechaObj.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
             
-            // Usamos colores según el tipo de acción para identificar rápido
-            let colorAccion = "#2c3e50"; // Color por defecto
-            if (log.accion.includes("ELIMINAR")) colorAccion = "#e74c3c"; // Rojo
-            if (log.accion.includes("EDITAR")) colorAccion = "#f39c12";   // Naranja
-            if (log.accion.includes("CREADO")) colorAccion = "#27ae60";   // Verde
+            let colorAccion = "#2c3e50"; 
+            if (log.accion.includes("ELIMINAR")) colorAccion = "#e74c3c"; 
+            if (log.accion.includes("EDITAR")) colorAccion = "#f39c12";  
+            if (log.accion.includes("CREADO")) colorAccion = "#27ae60";  
 
             div.innerHTML = `
                 <span class="log-fecha" style="color: #7f8c8d; font-weight: 500;">${fechaFormateada}</span>

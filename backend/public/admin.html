@@ -19,7 +19,10 @@
             
             <textarea id="descripcion" placeholder="Escribe una breve descripción..." rows="3"></textarea>
             
-            <input type="text" id="imagen_url" placeholder="URL de la imagen (PostImages/Imgur)">
+            <div class="input-group">
+                <label>Imagen del Producto</label>
+                    <input type="file" id="imagenProducto" accept=".jpg, .jpeg, .png" required>
+            </div>
             
             <select id="categoria">
                 <option value="" disabled selected>Selecciona una categoría</option>
