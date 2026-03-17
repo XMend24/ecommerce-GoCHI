@@ -527,3 +527,41 @@ main{
     transform: translateY(-2px);
     filter: brightness(1.1);
 }
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* --- Estilos base (Móvil primero) --- */
+.contenedor-productos {
+    display: flex;
+    flex-direction: column; 
+    gap: 20px;
+    padding: 10px;
+}
+
+.auth-card {
+    width: 90%; 
+    margin: auto;
+}
+
+/* --- Tablets (Pantallas medianas) --- */
+@media (min-width: 768px) {
+    .contenedor-productos {
+        flex-direction: row;
+        flex-wrap: wrap; 
+    }
+    
+    .producto-card {
+        width: calc(50% - 20px); 
+    }
+}
+
+/* --- Escritorio (Pantallas grandes) --- */
+@media (min-width: 1024px) {
+    .producto-card {
+        width: calc(25% - 20px); 
+    }
+}
