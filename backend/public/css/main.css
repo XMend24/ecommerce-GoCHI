@@ -93,15 +93,33 @@ main{
     margin-bottom: 2rem;
 }
 
+/* --- VITRINA DE PRODUCTOS (G☆CHI RESPONSIVE) --- */
 .contenedor-productos {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
+    grid-template-columns: 1fr; 
+    gap: 1.5rem;
 }
 
-.producto-imagen{
-    max-width: 300px;
-    border-radius: 10px auto;
+/* Tablets */
+@media (min-width: 768px) {
+    .contenedor-productos {
+        grid-template-columns: repeat(2, 1fr); 
+    }
+}
+
+/* Laptops y Escritorio */
+@media (min-width: 1024px) {
+    .contenedor-productos {
+        grid-template-columns: repeat(4, 1fr); 
+    }
+}
+
+.producto-imagen {
+    width: 100%; 
+    max-width: none; 
+    aspect-ratio: 1 / 1; 
+    object-fit: cover; 
+    border-radius: 10px;
 }
 
 .producto-detalles {
@@ -471,6 +489,7 @@ main{
     width: 100%;
     max-width: 400px;
     text-align: center;
+    margin: auto;
 }
 
 .auth-card h2 {
@@ -534,34 +553,3 @@ img {
     display: block;
 }
 
-/* --- Estilos base (Móvil primero) --- */
-.contenedor-productos {
-    display: flex;
-    flex-direction: column; 
-    gap: 20px;
-    padding: 10px;
-}
-
-.auth-card {
-    width: 90%; 
-    margin: auto;
-}
-
-/* --- Tablets (Pantallas medianas) --- */
-@media (min-width: 768px) {
-    .contenedor-productos {
-        flex-direction: row;
-        flex-wrap: wrap; 
-    }
-    
-    .producto-card {
-        width: calc(50% - 20px); 
-    }
-}
-
-/* --- Escritorio (Pantallas grandes) --- */
-@media (min-width: 1024px) {
-    .producto-card {
-        width: calc(25% - 20px); 
-    }
-}
