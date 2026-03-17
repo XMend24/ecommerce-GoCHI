@@ -221,3 +221,5 @@ function renderizarPaginacion(total, actual) {
         contenedor.appendChild(boton);
     }
 }
+
+cargarProductos('Todos', 1);
