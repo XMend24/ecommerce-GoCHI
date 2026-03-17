@@ -49,7 +49,7 @@ function renderizarProductos(productosElegidos) {
         }
 
         const div = document.createElement("div");
-        div.classList.add("producto");
+        div.classList.add("producto-card");
         div.innerHTML = `
             <div class="producto-imagen-container">
                 ${botonesAdmin} 
@@ -65,28 +65,22 @@ function renderizarProductos(productosElegidos) {
     });
 }
 
-// --- 4. Lógica de filtros (Se mantiene igual, pero optimizada) ---
+// --- 4. Lógica de filtros ---
 function configurarFiltros() {
     botonesCategorias.forEach(boton => {
         boton.addEventListener("click", (e) => {
+            // 1. Cambiamos la clase active
             botonesCategorias.forEach(b => b.classList.remove("active"));
             e.currentTarget.classList.add("active");
 
-            const textoBoton = e.currentTarget.innerText.trim().toLowerCase();
-
-            if (textoBoton !== "todos los productos") {
-                const productosFiltrados = productos.filter(p => {
-                    if (!p.categoria) return false;
-                    const catProducto = p.categoria.trim().toLowerCase();
-                    return textoBoton.includes(catProducto) || catProducto.includes(textoBoton);
-                });
-                
-                tituloPrincipal.innerText = e.currentTarget.innerText;
-                renderizarProductos(productosFiltrados);
-            } else {
-                tituloPrincipal.innerText = "Todos los productos";
-                renderizarProductos(productos);
-            }
+            // 2. Obtenemos el ID (Todos, Pulseras o Rosarios)
+            const categoriaElegida = e.currentTarget.id; 
+            
+            // 3. Actualizamos el título visual
+            tituloPrincipal.innerText = e.currentTarget.innerText;
+            
+            // 4. Pedimos al servidor los productos de esa categoría (Página 1)
+            cargarProductos(categoriaElegida, 1);
         });
     });
 }
@@ -200,6 +194,8 @@ async function cargarProductos(categoria = 'Todos', pagina = 1) {
     const res = await fetch(`/api/products?categoria=${categoria}&page=${pagina}`);
     const data = await res.json();
 
+    productos = data.products;
+
     renderizarProductos(data.products); 
     renderizarPaginacion(data.totalPages, data.currentPage);
 }
@@ -222,4 +218,9 @@ function renderizarPaginacion(total, actual) {
     }
 }
 
-cargarProductos('Todos', 1);
+// --- ARRANQUE DE LA APLICACIÓN ---
+document.addEventListener("DOMContentLoaded", () => {
+    configurarMenuUsuario();
+    configurarFiltros(); 
+    cargarProductos('Todos', 1); 
+});
