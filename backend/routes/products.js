@@ -45,11 +45,35 @@ const esAdmin = (req, res, next) => {
 // GET /api/products - Listar productos (PÚBLICO)
 router.get('/', async (req, res) => {
     try {
-        const query = `
-            SELECT id, nombre AS titulo, precio, descripcion, imagen_url AS imagen, categoria
-            FROM productos`;
-        const [products] = await db.query(query);
-        res.json(products);
+        const page = parseInt(req.query.page) || 1; 
+        const limit = 12; // Cantidad de productos por página 
+        const offset = (page - 1) * limit;
+        const categoria = req.query.categoria;
+
+        let query = `SELECT id, nombre AS titulo, precio, descripcion, imagen_url AS imagen, categoria FROM productos`;
+        let countQuery = `SELECT COUNT(*) as total FROM productos`;
+        const params = [];
+
+        // Si hay categoría (Pulseras/Rosarios), filtramos
+        if (categoria && categoria !== 'Todos') {
+            query += ` WHERE categoria = ?`;
+            countQuery += ` WHERE categoria = ?`;
+            params.push(categoria);
+        }
+
+        query += ` LIMIT ? OFFSET ?`;
+        
+        // Ejecutamos ambas consultas
+        const [products] = await db.query(query, [...params, limit, offset]);
+        const [totalRows] = await db.query(countQuery, params);
+
+        const totalPages = Math.ceil(totalRows[0].total / limit);
+
+        res.json({
+            products,
+            totalPages,
+            currentPage: page
+        });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

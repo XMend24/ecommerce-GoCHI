@@ -553,3 +553,31 @@ img {
     display: block;
 }
 
+.contenedor-paginacion {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+.boton-paginacion {
+    background-color: var(--clr-gray);
+    color: var(--clr-main);
+    border: none;
+    padding: 0.6rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.boton-paginacion:hover {
+    background-color: var(--clr-main-light);
+    color: white;
+}
+
+.boton-paginacion.active {
+    background-color: var(--clr-main);
+    color: white;
+}

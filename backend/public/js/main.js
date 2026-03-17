@@ -1,5 +1,7 @@
 // --- 1. Variables Globales ---
 let productos = []; 
+let paginaActual = 1;
+let categoriaActual = 'Todos';
 const contenedorProductos = document.querySelector("#contenedor-productos");
 const botonesCategorias = document.querySelectorAll(".boton-categoria");
 const tituloPrincipal = document.querySelector(".titulo-principal");
@@ -188,4 +190,34 @@ async function eliminarProducto(id) {
 // --- FUNCION EDITAR (Redirigir al panel con los datos) ---
 function prepararEdicion(id) {
     window.location.href = `admin.html?edit=${id}`;
+}
+
+// --- FUNCION PAGINADOR---
+async function cargarProductos(categoria = 'Todos', pagina = 1) {
+    categoriaActual = categoria;
+    paginaActual = pagina;
+
+    const res = await fetch(`/api/products?categoria=${categoria}&page=${pagina}`);
+    const data = await res.json();
+
+    renderizarProductos(data.products); 
+    renderizarPaginacion(data.totalPages, data.currentPage);
+}
+
+function renderizarPaginacion(total, actual) {
+    const contenedor = document.querySelector('#contenedor-paginacion');
+    contenedor.innerHTML = '';
+
+    for (let i = 1; i <= total; i++) {
+        const boton = document.createElement('button');
+        boton.innerText = i;
+        boton.classList.add('boton-paginacion');
+        if (i === actual) boton.classList.add('active');
+
+        boton.addEventListener('click', () => {
+            cargarProductos(categoriaActual, i);
+            window.scrollTo(0, 0); 
+        });
+        contenedor.appendChild(boton);
+    }
 }
