@@ -100,8 +100,8 @@ main{
 }
 
 .producto-imagen{
-    max-width: 100%;
-    border-radius: 1rem;
+    max-width: 300px;
+    border-radius: 10px auto;
 }
 
 .producto-detalles {
