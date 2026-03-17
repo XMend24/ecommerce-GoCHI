@@ -13,9 +13,9 @@
             <header><h1 class="logo">G☆CHI</h1></header>
             <nav>
                 <ul class="menu">
-                    <li><button class="boton-menu boton-categoria active">Todos los productos</button></li>
-                    <li><button class="boton-menu boton-categoria">Pulseras</button></li>
-                    <li><button class="boton-menu boton-categoria">Rosarios</button></li>
+                    <li><button id="Todos" class="boton-menu boton-categoria active">Todos los productos</button></li>
+                    <li><button id="Pulseras" class="boton-menu boton-categoria">Pulseras</button></li>
+                    <li><button id="Rosarios" class="boton-menu boton-categoria">Rosarios</button></li>
                     <li><a class="boton-menu" href="./carrito.html"><i class="bi bi-cart-fill"></i> Carrito</a></li>
                     <div class="user-menu-container">
     <button id="user-menu-btn" class="boton-menu user-btn">
@@ -66,8 +66,8 @@
             document.getElementById('admin-link').style.display = 'inline';
         }
 
-        if (typeof cargarProductosDesdeBD === "function") {
-            cargarProductosDesdeBD();
+        if (typeof cargarProductos === "function") {
+            cargarProductos('Todos', 1);
         }
     };
     
