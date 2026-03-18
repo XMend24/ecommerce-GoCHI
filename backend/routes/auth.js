@@ -65,22 +65,31 @@ router.post('/login', async (req, res) => {
     }
 });
 
-// [RF-06] Editar perfil
-router.put('/profile', async (req, res) => {
+// [RF-06] Editar perfil - RUTA CORREGIDA
+router.put('/update-profile', async (req, res) => {
     try {
         const token = req.headers.authorization?.split(' ')[1];
         if (!token) return res.status(401).json({ error: 'No autorizado' });
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const { name } = req.body;
+        const { name, password } = req.body;
 
-        // Actualizar en MySQL
-        await db.query('UPDATE usuarios SET nombre = ? WHERE id = ?', [name, decoded.id]);
+        if (password) {
+            // Si el usuario quiere cambiar la contraseña, la ciframos
+            const hashedPassword = await bcrypt.hash(password, 10);
+            await db.query(
+                'UPDATE usuarios SET nombre = ?, contraseña_hash = ? WHERE id = ?', 
+                [name, hashedPassword, decoded.id]
+            );
+        } else {
+            // Si no hay contraseña nueva, solo actualizamos el nombre
+            await db.query('UPDATE usuarios SET nombre = ? WHERE id = ?', [name, decoded.id]);
+        }
         
-        res.json({ message: 'Perfil actualizado' });
+        res.json({ message: 'Perfil actualizado correctamente', newName: name });
     } catch (error) {
+        console.error("Error en el servidor:", error);
         res.status(500).json({ error: error.message });
     }
 });
-
 module.exports = router;

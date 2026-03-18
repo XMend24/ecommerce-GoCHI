@@ -23,40 +23,33 @@ window.onload = function() {
 
 async function updateProfile() {
     const name = document.getElementById('name').value;
+    const password = document.getElementById('new-password').value; 
     const token = localStorage.getItem('token');
 
-    // Validación simple
-    if (!name.trim()) {
-        alert("El nombre no puede estar vacío");
-        return;
-    }
-
     try {
-        // 3. RUTA CORREGIDA: Usamos una ruta de actualización, no de registro
         const response = await fetch('/api/auth/update-profile', {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ name })
+            body: JSON.stringify({ name, password })
         });
         
         const data = await response.json();
 
         if (response.ok) {
-            // 4. ACTUALIZAR LOCALSTORAGE
-            // Esto es vital para que la tienda no siga diciendo "undefined"
-            localStorage.setItem('userEmail', name + "@cambiado.com"); // Ajusta según tu lógica
+            // Guardamos el nuevo nombre para que main.js lo pueda leer
+            localStorage.setItem('userEmail', name + "@gmail.com"); 
             
-            alert('¡Perfil actualizado con éxito!');
-            window.location.href = 'index.html'; // Volvemos a la tienda para ver los cambios
+            alert('¡Cambios guardados con éxito!');
+            window.location.href = 'index.html'; 
         } else {
             alert('Error: ' + (data.error || 'No se pudo actualizar'));
         }
     } catch (error) {
-        console.error("Error de conexión:", error);
-        alert('Error de conexión con el servidor');
+        console.error("Error:", error);
+        alert('Error de conexión con el servidor. Revisa la consola (F12).');
     }
 }
 
