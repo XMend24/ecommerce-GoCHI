@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perfil - G☆CHIiseños</title>
+    <title>Perfil - G☆CHI Shop</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="./css/main.css">
 </head>
 <body class="auth-body">
@@ -14,15 +15,15 @@
         <h2>Mi Perfil</h2>
         <p>Actualiza tu información personal.</p>
 
-        <form id="profile-form">
+        <form id="profile-form" onsubmit="event.preventDefault(); updateProfile();">
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                 <div class="input-group">
                     <label>Nombre</label>
-                    <input type="text" id="perfil-nombre" value="Usuario Actual">
+                    <input type="text" id="name" placeholder="Cargando nombre...">
                 </div>
                 <div class="input-group">
                     <label>Email</label>
-                    <input type="email" id="perfil-email" disabled style="background: #f9f9f9; cursor: not-allowed;">
+                    <input type="email" id="email" disabled style="background: #f9f9f9; cursor: not-allowed;">
                 </div>
             </div>
             
@@ -36,7 +37,8 @@
                 <button type="button" class="btn-auth" style="background: #e74c3c;" onclick="window.location.href='index.html'">Cancelar</button>
             </div>
         </form>
-        <script src="/js/login.js"></script>
     </div>
+
+    <script src="./js/profile.js"></script>
 </body>
 </html>

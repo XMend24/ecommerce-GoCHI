@@ -30,6 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.log("🎉 Login exitoso", data);
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('userRole', data.role);
+                localStorage.setItem('userName', data.nombre);
                 localStorage.setItem('userEmail', data.email);
 
                 alert("¡Bienvenido!");
