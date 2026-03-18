@@ -3,25 +3,17 @@ const db = require('../server');
 const router = express.Router();
 const path = require('path'); 
 const multer = require('multer'); 
+const axios = require('axios'); 
+const FormData = require('form-data'); 
 const { verificarToken } = require('../middleware/auth'); 
 const { registrarAccion } = require('../utils/logger');
 
-// --- 1. CONFIGURACIÓN DE ALMACENAMIENTO (MULTER) ---
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        // Las fotos se guardarán en public/uploads/
-        cb(null, 'public/uploads/');
-    },
-    filename: (req, file, cb) => {
-        // Nombre único: Marca de tiempo + extensión original (ej: 171583000.jpg)
-        cb(null, Date.now() + path.extname(file.originalname));
-    }
-});
+// --- 1. CONFIGURACIÓN DE ALMACENAMIENTO EN MEMORIA ---
+const storage = multer.memoryStorage();
 
 const upload = multer({ 
     storage: storage,
     fileFilter: (req, file, cb) => {
-        // Validamos que sea solo imagen
         const filetypes = /jpeg|jpg|png/;
         const mimetype = filetypes.test(file.mimetype);
         const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
@@ -46,7 +38,7 @@ const esAdmin = (req, res, next) => {
 router.get('/', async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1; 
-        const limit = 12; // Cantidad de productos por página 
+        const limit = 12; 
         const offset = (page - 1) * limit;
         const categoria = req.query.categoria;
 
@@ -54,7 +46,6 @@ router.get('/', async (req, res) => {
         let countQuery = `SELECT COUNT(*) as total FROM productos`;
         const params = [];
 
-        // Si hay categoría (Pulseras/Rosarios), filtramos
         if (categoria && categoria !== 'Todos') {
             query += ` WHERE categoria = ?`;
             countQuery += ` WHERE categoria = ?`;
@@ -63,7 +54,6 @@ router.get('/', async (req, res) => {
 
         query += ` LIMIT ? OFFSET ?`;
         
-        // Ejecutamos ambas consultas
         const [products] = await db.query(query, [...params, limit, offset]);
         const [totalRows] = await db.query(countQuery, params);
 
@@ -92,37 +82,58 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// POST /api/products - Crear producto con IMAGEN FÍSICA
-// Añadimos 'upload.single('imagen')' para procesar el archivo del FormData
+// POST /api/products - Crear producto en IMGBB
 router.post('/', verificarToken, esAdmin, upload.single('imagen'), async (req, res) => {
     try {
         const { nombre, precio, descripcion, categoria } = req.body;
-        
-        // Si se subió un archivo, guardamos la ruta. Si no, queda vacío.
-        const imagen_url = req.file ? `/uploads/${req.file.filename}` : null;
+        let imagen_url = null;
 
+        // 1. Si hay archivo, lo enviamos a ImgBB
+        if (req.file) {
+            const imageBase64 = req.file.buffer.toString('base64');
+            const form = new FormData();
+            form.append('image', imageBase64);
+
+            const response = await axios.post(`https://api.imgbb.com/1/upload?key=${process.env.IMGBB_API_KEY}`, form, {
+                headers: form.getHeaders()
+            });
+            imagen_url = response.data.data.url; // Rescatamos el link permanente
+        }
+
+        // 2. Guardamos en MySQL usando la URL de ImgBB
         const sql = 'INSERT INTO productos (nombre, precio, descripcion, imagen_url, categoria) VALUES (?, ?, ?, ?, ?)';
         const [result] = await db.query(sql, [nombre, precio, descripcion, imagen_url, categoria]);
 
         await registrarAccion(req.user.id, 'PRODUCTO CREADO', `Se añadió el producto "${nombre}"`);
-        res.json({ message: '✅ Producto creado con éxito', id: result.insertId });
+        res.json({ message: '✅ Producto creado con éxito', id: result.insertId, url: imagen_url });
     } catch (error) {
+        console.error("Error al subir imagen:", error.message);
         res.status(500).json({ error: error.message });
     }
 });
 
-// PUT /api/products/:id - Editar producto (Opcional subir nueva imagen)
+// PUT /api/products/:id - Editar producto en IMGBB
 router.put('/:id', verificarToken, esAdmin, upload.single('imagen'), async (req, res) => {
     try {
         const { id } = req.params;
         const { nombre, precio, descripcion, categoria } = req.body;
         
-        // 1. Buscamos el producto actual para no perder la imagen anterior si no se sube una nueva
         const [actual] = await db.query('SELECT imagen_url FROM productos WHERE id = ?', [id]);
         if (actual.length === 0) return res.status(404).json({ error: "Producto no encontrado" });
 
-        // 2. Si el usuario subió una imagen nueva, usamos esa. Si no, mantenemos la vieja.
-        const nuevaImagen = req.file ? `/uploads/${req.file.filename}` : actual[0].imagen_url;
+        let nuevaImagen = actual[0].imagen_url;
+
+        // Si subió archivo nuevo, repetimos el proceso de ImgBB
+        if (req.file) {
+            const imageBase64 = req.file.buffer.toString('base64');
+            const form = new FormData();
+            form.append('image', imageBase64);
+
+            const response = await axios.post(`https://api.imgbb.com/1/upload?key=${process.env.IMGBB_API_KEY}`, form, {
+                headers: form.getHeaders()
+            });
+            nuevaImagen = response.data.data.url;
+        }
 
         const sql = `UPDATE productos SET nombre=?, precio=?, descripcion=?, imagen_url=?, categoria=? WHERE id=?`;
         await db.query(sql, [nombre, precio, descripcion, nuevaImagen, categoria, id]);
@@ -130,6 +141,7 @@ router.put('/:id', verificarToken, esAdmin, upload.single('imagen'), async (req,
         await registrarAccion(req.user.id, 'PRODUCTO_EDITAR', `Editó: ${nombre}`);
         res.json({ message: "Producto actualizado correctamente" });
     } catch (error) {
+        console.error("Error al actualizar imagen:", error.message);
         res.status(500).json({ error: error.message });
     }
 });
