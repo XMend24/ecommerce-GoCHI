@@ -41,7 +41,9 @@ router.post('/login', async (req, res) => {
         if (!user) {
             return res.status(401).json({ error: 'Credenciales inválidas' });
         }
-
+        if (user.estatus === 'bloqueado') {
+            return res.status(403).json({ error: 'Tu cuenta ha sido suspendida. Contacta al soporte.' });
+        }
         // 2. Comparar contraseña (usando el nombre de columna de tu tabla)
         const isMatch = await bcrypt.compare(password, user.contraseña_hash);
         if (!isMatch) {
@@ -89,6 +91,32 @@ router.put('/update-profile', async (req, res) => {
         res.json({ message: 'Perfil actualizado correctamente', newName: name });
     } catch (error) {
         console.error("Error en el servidor:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// [RF-07] Obtener todos los usuarios (Solo para Admins)
+router.get('/users', async (req, res) => {
+    try {
+        const [rows] = await db.query('SELECT id, nombre, email, role, estatus FROM usuarios');
+        res.json(rows);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// [RF-08] Actualizar estatus o rol de un usuario
+router.put('/users/:id', async (req, res) => {
+    const { id } = req.params;
+    const { role, estatus } = req.body;
+
+    try {
+        await db.query(
+            'UPDATE usuarios SET role = ?, estatus = ? WHERE id = ?',
+            [role, estatus, id]
+        );
+        res.json({ message: 'Usuario actualizado correctamente' });
+    } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
