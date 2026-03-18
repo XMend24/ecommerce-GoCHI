@@ -1,4 +1,3 @@
-// Esperamos a que todo el HTML cargue antes de buscar el formulario
 document.addEventListener("DOMContentLoaded", () => {
     const loginForm = document.querySelector("#login-form");
 
@@ -30,8 +29,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.log("🎉 Login exitoso", data);
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('userRole', data.role);
-                localStorage.setItem('userName', data.nombre);
-                localStorage.setItem('userEmail', data.email);
+                localStorage.setItem('userName', data.user.nombre); 
+                localStorage.setItem('userEmail', data.user.email);
 
                 alert("¡Bienvenido!");
                 window.location.href = data.role === 'admin' ? 'admin.html' : 'index.html';

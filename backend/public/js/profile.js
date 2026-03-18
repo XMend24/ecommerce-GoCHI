@@ -40,7 +40,7 @@ async function updateProfile() {
 
         if (response.ok) {
             // Guardamos el nuevo nombre para que main.js lo pueda leer
-            localStorage.setItem('userEmail', name + "@gmail.com"); 
+            localStorage.setItem('userName', name); 
             
             alert('¡Cambios guardados con éxito!');
             window.location.href = 'index.html'; 

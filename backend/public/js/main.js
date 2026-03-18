@@ -130,11 +130,10 @@ function configurarMenuUsuario() {
     const logoutBtn = document.querySelector("#cerrar-sesion-btn");
 
     // 1. Obtener datos del usuario (Asegúrate de guardar 'userEmail' y 'userRole' en el login)
-    const userEmail = localStorage.getItem('userEmail') || "Usuario";
+    const userName = localStorage.getItem('userName') || "Usuario";
     const userRole = localStorage.getItem('userRole'); // 'admin' o 'user'
 
-    // Cortar el email para mostrar solo el nombre antes del @
-    nameDisplay.innerText = userEmail.split('@')[0];
+    nameDisplay.innerText = userName;
 
     // 2. Mostrar Panel Admin solo si es administrador
     if (userRole === 'admin') {
