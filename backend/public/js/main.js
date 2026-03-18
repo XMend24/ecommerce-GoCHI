@@ -121,9 +121,6 @@ async function addToCart(productoId) {
         alert("Error de conexión con el servidor.");
     }
 }
-document.addEventListener("DOMContentLoaded", () => {
-    configurarMenuUsuario();
-});
 
 function configurarMenuUsuario() {
     const userMenuBtn = document.querySelector("#user-menu-btn");
