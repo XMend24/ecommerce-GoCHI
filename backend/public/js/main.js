@@ -220,7 +220,18 @@ function renderizarPaginacion(total, actual) {
 
 // --- ARRANQUE DE LA APLICACIÓN ---
 document.addEventListener("DOMContentLoaded", () => {
-    configurarMenuUsuario();
-    configurarFiltros(); 
-    cargarProductos('Todos', 1); 
+    // 1. Encendemos el menú del usuario
+    if (typeof configurarMenuUsuario === "function") {
+        configurarMenuUsuario();
+    }
+    
+    // 2. Encendemos los botones de categorías (Pulseras, Rosarios)
+    if (typeof configurarFiltros === "function") {
+        configurarFiltros(); 
+    }
+    
+    // 3. Traemos los productos de la página 1
+    if (typeof cargarProductos === "function") {
+        cargarProductos('Todos', 1); 
+    }
 });
