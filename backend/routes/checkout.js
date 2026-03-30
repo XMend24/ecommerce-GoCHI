@@ -5,15 +5,10 @@ const { verificarToken } = require('../middleware/auth');
 
 // Configuración del "Cartero" de correos
 const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587, 
-    secure: false, 
+    service: 'gmail', 
     auth: {
         user: process.env.EMAIL_ADMIN,
         pass: process.env.EMAIL_PASS
-    },
-    tls: {
-        rejectUnauthorized: false 
     }
 });
 
