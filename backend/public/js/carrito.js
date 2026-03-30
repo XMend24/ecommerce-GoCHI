@@ -141,7 +141,7 @@ async function vaciarCarrito() {
 }
 
 function abrirCheckout() {
-    const total = document.getElementById('total-carrito').innerText;
+    const total = document.getElementById('total').innerText;
     
     // Validación básica: si no hay nada, no abrimos el modal
     if (total === "0" || total === "0.00" || total === "") {

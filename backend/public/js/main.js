@@ -85,7 +85,7 @@ function configurarFiltros() {
     });
 }
 
-// --- 5. Agregar al Carrito (URL CORREGIDA) ---
+// --- 5. Agregar al Carrito ---
 async function addToCart(productoId) {
     const token = localStorage.getItem('token');
     
@@ -97,7 +97,7 @@ async function addToCart(productoId) {
     const productoEncontrado = productos.find(p => p.id === productoId);
     const nombreProducto = productoEncontrado ? productoEncontrado.titulo : "Producto desconocido";
     try {
-        const response = await fetch(`${BASE_URL}/carrito`, { // URL DE RENDER
+        const response = await fetch(`${BASE_URL}/carrito`, { 
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
