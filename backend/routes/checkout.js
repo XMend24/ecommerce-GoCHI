@@ -1,67 +1,37 @@
 const express = require('express');
 const router = express.Router();
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 const { verificarToken } = require('../middleware/auth'); 
 
-// Configuración del "Cartero" de correos
-const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false, 
-    auth: {
-        user: process.env.EMAIL_ADMIN,
-        pass: process.env.EMAIL_PASS
-    },
-    tls: {
-        rejectUnauthorized: false,
-        minVersion: "TLSv1.2"
-    },
-    debug: true,
-    logger: true
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
-// POST /api/checkout - Recibir formulario de pago
 router.post('/', verificarToken, async (req, res) => {
+    const { nombreCliente, telefono, direccion, bancoOrigen, numeroReferencia, montoTotal, carrito } = req.body;
+
     try {
-        // 1. Recibir los datos del formulario del frontend
-        const { nombreCliente, telefono, direccion, bancoOrigen, numeroReferencia, montoTotal, carrito } = req.body;
-
-        // 2. Construir el contenido del correo
-        const mailOptions = {
-            from: `"G☆CHI Sistema de Ventas" <${process.env.EMAIL_ADMIN}>`,
-            to: process.env.EMAIL_ADMIN, // 
-            subject: `🚨 NUEVA COMPRA REGISTRADA - Ref: ${numeroReferencia}`,
+        const data = await resend.emails.send({
+            from: 'Gochi Store <onboarding@resend.dev>', 
+            to: [process.env.EMAIL_ADMIN], 
+            subject: `🛍️ Nueva Venta G☆CHI - Ref: ${numeroReferencia}`,
             html: `
-                <div style="font-family: Arial, sans-serif; color: #2c3e50;">
-                    <h2 style="color: #D4AF37;">Notificación de Nuevo Pago</h2>
-                    <p>Se ha registrado un nuevo pago por transferencia bancaria. Por favor, verifica en tu cuenta.</p>
-                    
-                    <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-                        <tr style="background-color: #f4f4f4;"><th style="padding: 10px; text-align: left;">Datos del Cliente</th></tr>
-                        <tr><td style="padding: 10px;"><b>Nombre:</b> ${nombreCliente}</td></tr>
-                        <tr><td style="padding: 10px;"><b>Teléfono:</b> ${telefono}</td></tr>
-                        <tr><td style="padding: 10px;"><b>Dirección de entrega:</b> ${direccion}</td></tr>
-                        
-                        <tr style="background-color: #f4f4f4;"><th style="padding: 10px; text-align: left;">Datos del Pago</th></tr>
-                        <tr><td style="padding: 10px;"><b>Banco de Origen:</b> ${bancoOrigen}</td></tr>
-                        <tr><td style="padding: 10px;"><b>N° de Referencia:</b> ${numeroReferencia}</td></tr>
-                        <tr><td style="padding: 10px;"><b>Monto Total:</b> Bs/Ref ${montoTotal}</td></tr>
-                    </table>
-
-                    <p style="margin-top: 20px;"><b>Detalles del pedido:</b> ${carrito}</p>
-                </div>
+                <h1>Nueva Notificación de Pago</h1>
+                <p><strong>Cliente:</strong> ${nombreCliente}</p>
+                <p><strong>Teléfono:</strong> ${telefono}</p>
+                <p><strong>Dirección:</strong> ${direccion}</p>
+                <p><strong>Banco:</strong> ${bancoOrigen}</p>
+                <p><strong>Referencia:</strong> ${numeroReferencia}</p>
+                <p><strong>Monto:</strong> ${montoTotal}</p>
+                <hr>
+                <p><strong>Productos:</strong> ${carrito}</p>
             `
-        };
+        });
 
-        // 3. Enviar el correo
-        await transporter.sendMail(mailOptions);
-
-
-        res.json({ message: '✅ Formulario enviado con éxito. En breve verificaremos tu pago.' });
+        console.log("✅ Correo enviado vía Resend:", data);
+        res.status(200).json({ message: "Pago reportado con éxito" });
 
     } catch (error) {
-        console.error("Error enviando el correo:", error);
-        res.status(500).json({ error: 'Hubo un problema al procesar la confirmación.' });
+        console.error("❌ Error con Resend:", error);
+        res.status(500).json({ error: "Error al procesar el envío" });
     }
 });
 
