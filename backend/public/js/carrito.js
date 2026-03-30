@@ -139,3 +139,43 @@ async function vaciarCarrito() {
         console.error("Error al vaciar:", error);
     }
 }
+
+async function confirmarCompra() {
+    // 1. Recopilamos los datos (puedes usar un modal o campos en el HTML)
+    const datosPago = {
+        nombreCliente: document.getElementById('nombre-confirm').value,
+        telefono: document.getElementById('tel-confirm').value,
+        direccion: document.getElementById('dir-confirm').value,
+        bancoOrigen: document.getElementById('banco-confirm').value,
+        numeroReferencia: document.getElementById('ref-confirm').value,
+        montoTotal: document.getElementById('total-carrito').innerText,
+        // Convertimos el carrito a texto para el correo
+        carrito: JSON.stringify(obtenerCarritoLocal()) 
+    };
+
+    const token = localStorage.getItem('token');
+
+    try {
+        const response = await fetch('/api/checkout', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` // Si tu ruta usa verificarToken
+            },
+            body: JSON.stringify(datosPago)
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            alert('✅ ¡Pago enviado! El administrador revisará tu referencia pronto.');
+            localStorage.removeItem('carrito'); // Limpiamos el carrito
+            window.location.href = 'index.html';
+        } else {
+            alert('❌ Error: ' + result.error);
+        }
+    } catch (error) {
+        console.error("Error en el checkout:", error);
+        alert('Hubo un fallo en la conexión al confirmar el pago.');
+    }
+}

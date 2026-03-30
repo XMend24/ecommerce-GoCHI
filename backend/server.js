@@ -21,9 +21,6 @@ pool.query('SELECT 1')
     .then(() => console.log('✅ ¡CONEXIÓN EXITOSA CON RAILWAY!'))
     .catch(err => console.error('❌ Error detallado de conexión:', err.code, err.message));
 
-// Exportamos el pool para que tus rutas lo usen si lo necesitan
-// Nota: Si tus archivos en ./routes/ usan 'require(../config/mysql)', 
-// deberías editar ese archivo también con estos mismos datos.
 module.exports = pool; 
 
 // --- 2. Middlewares ---
@@ -41,9 +38,9 @@ app.use('/api/products', require('./routes/products'));
 app.use('/api/carrito', require('./routes/carritoMySQL'));
 app.use('/api/pedidos', require('./routes/pedidosMySQL'));
 app.use('/api/bitacora', require('./routes/bitacoraMySQL'));
+app.use('/api/checkout', require('./routes/checkout'));
 
 // --- 4. Encender Servidor ---
-// Render usa el puerto 10000 por defecto
 const PORT = process.env.PORT || 10000; 
 
 app.listen(PORT, '0.0.0.0', () => {
