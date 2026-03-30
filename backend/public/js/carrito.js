@@ -170,8 +170,7 @@ async function confirmarCompra(e) {
         bancoOrigen: document.getElementById('banco-confirm').value,
         numeroReferencia: document.getElementById('ref-confirm').value,
         montoTotal: document.getElementById('total').innerText,
-        // Usamos la función que ya tenías para obtener los productos
-        carrito: JSON.stringify(obtenerCarritoLocal()) 
+        carrito: obtenerCarritoLocal()
     };
 
     const token = localStorage.getItem('token');
@@ -200,4 +199,18 @@ async function confirmarCompra(e) {
         console.error("Error en el checkout:", error);
         alert('Hubo un fallo en la conexión al confirmar el pago.');
     }
+}
+
+function obtenerCarritoLocal() {
+    const productos = document.querySelectorAll(".carrito-producto");
+    let listaProductos = [];
+
+    productos.forEach(producto => {
+        const titulo = producto.querySelector(".carrito-producto-titulo h3").innerText;
+        const cantidad = producto.querySelector(".carrito-producto-cantidad p").innerText;
+        const precio = producto.querySelector(".carrito-producto-precio p").innerText;
+        listaProductos.push(`${titulo} (Cant: ${cantidad}) - ${precio}`);
+    });
+
+    return listaProductos.join(", "); 
 }
