@@ -169,7 +169,7 @@ async function confirmarCompra(e) {
         direccion: document.getElementById('dir-confirm').value,
         bancoOrigen: document.getElementById('banco-confirm').value,
         numeroReferencia: document.getElementById('ref-confirm').value,
-        montoTotal: document.getElementById('total-carrito').innerText,
+        montoTotal: document.getElementById('total').innerText,
         // Usamos la función que ya tenías para obtener los productos
         carrito: JSON.stringify(obtenerCarritoLocal()) 
     };
