@@ -36,13 +36,55 @@
                 <div class="carrito-acciones-derecha">
                     <div class="carrito-acciones-total">
                         <p>Total:</p>
-                        <p id="total">$0</p>
+                        <p id="total-carrito">$0</p>
                     </div>
-                    <button class="carrito-acciones-comprar" onclick="confirmarCompra()">Comprar Ahora</button>
+                    <button onclick="abrirCheckout()" class="btn-comprar">Comprar Ahora</button>
                 </div>
             </div>
         </main>
     </div>
+
+    <div id="modal-pago" class="modal" style="display: none;">
+    <div class="modal-content auth-card">
+        <span class="close-btn" onclick="cerrarModal()">&times;</span>
+        <h2 style="color: var(--gold-accent);">Confirmar Transferencia</h2>
+        <p>Por favor, ingresa los datos de tu pago para procesar el pedido.</p>
+        
+        <form id="form-checkout" onsubmit="confirmarCompra(event)">
+            <div class="input-group">
+                <label>Nombre del Titular</label>
+                <input type="text" id="nombre-confirm" placeholder="Ej. Juan Pérez" required>
+            </div>
+            <div class="input-group">
+                <label>Teléfono de Contacto</label>
+                <input type="tel" id="tel-confirm" placeholder="0412-0000000" required>
+            </div>
+            <div class="input-group">
+                <label>Dirección de Envío</label>
+                <input type="text" id="dir-confirm" placeholder="Ciudad, Sector, Calle..." required>
+            </div>
+            <div class="input-group">
+                <label>Banco de Origen</label>
+                <select id="banco-confirm" required style="width: 100%; padding: 10px; border-radius: 5px;">
+                    <option value="Banesco">Banesco</option>
+                    <option value="Mercantil">Mercantil</option>
+                    <option value="BDV">Banco de Venezuela</option>
+                    <option value="Pago Movil">Pago Móvil / Otro</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>N° de Referencia (Últimos 6-8 dígitos)</label>
+                <input type="text" id="ref-confirm" placeholder="123456" required>
+            </div>
+            
+            <p>Total a Reportar: <span id="monto-final" style="font-weight: bold; color: var(--gold-accent);"></span></p>
+            
+            <button type="submit" class="btn-auth" style="background-color: var(--gold-accent); margin-top: 15px;">
+                Enviar Confirmación
+            </button>
+        </form>
+    </div>
+</div>
 
     <script src="./js/carrito.js"></script>
 </body>

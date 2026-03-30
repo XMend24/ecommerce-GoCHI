@@ -140,8 +140,29 @@ async function vaciarCarrito() {
     }
 }
 
-async function confirmarCompra() {
-    // 1. Recopilamos los datos (puedes usar un modal o campos en el HTML)
+function abrirCheckout() {
+    const total = document.getElementById('total-carrito').innerText;
+    
+    // Validación básica: si no hay nada, no abrimos el modal
+    if (total === "0" || total === "0.00" || total === "") {
+        alert("Tu carrito está vacío.");
+        return;
+    }
+
+    // Pasamos el total al modal para que el usuario lo vea
+    document.getElementById('monto-final').innerText = total;
+    
+    // Mostramos el modal
+    document.getElementById('modal-pago').style.display = 'flex';
+}
+
+function cerrarModal() {
+    document.getElementById('modal-pago').style.display = 'none';
+}
+
+async function confirmarCompra(e) {
+    if (e) e.preventDefault(); 
+
     const datosPago = {
         nombreCliente: document.getElementById('nombre-confirm').value,
         telefono: document.getElementById('tel-confirm').value,
@@ -149,7 +170,7 @@ async function confirmarCompra() {
         bancoOrigen: document.getElementById('banco-confirm').value,
         numeroReferencia: document.getElementById('ref-confirm').value,
         montoTotal: document.getElementById('total-carrito').innerText,
-        // Convertimos el carrito a texto para el correo
+        // Usamos la función que ya tenías para obtener los productos
         carrito: JSON.stringify(obtenerCarritoLocal()) 
     };
 
@@ -160,7 +181,7 @@ async function confirmarCompra() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}` // Si tu ruta usa verificarToken
+                'Authorization': `Bearer ${token}` 
             },
             body: JSON.stringify(datosPago)
         });
@@ -169,10 +190,11 @@ async function confirmarCompra() {
 
         if (response.ok) {
             alert('✅ ¡Pago enviado! El administrador revisará tu referencia pronto.');
-            localStorage.removeItem('carrito'); // Limpiamos el carrito
+            localStorage.removeItem('carrito'); 
+            cerrarModal(); 
             window.location.href = 'index.html';
         } else {
-            alert('❌ Error: ' + result.error);
+            alert('❌ Error: ' + (result.error || 'No se pudo procesar el pago'));
         }
     } catch (error) {
         console.error("Error en el checkout:", error);
