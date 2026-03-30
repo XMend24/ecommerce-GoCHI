@@ -6,17 +6,18 @@ const { verificarToken } = require('../middleware/auth');
 // Configuración del "Cartero" de correos
 const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
-    port: 465, // Usaremos el puerto seguro por defecto
-    secure: true, // true para puerto 465
+    port: 587,
+    secure: false, 
     auth: {
         user: process.env.EMAIL_ADMIN,
         pass: process.env.EMAIL_PASS
     },
-    connectionTimeout: 20000, // 20 segundos de paciencia
-    greetingTimeout: 20000,
-    socketTimeout: 20000,
-    debug: true, // Esto nos dará más info en los logs
-    logger: true // Esto mostrará el paso a paso en los logs de Render
+    tls: {
+        rejectUnauthorized: false,
+        minVersion: "TLSv1.2"
+    },
+    debug: true,
+    logger: true
 });
 
 // POST /api/checkout - Recibir formulario de pago
